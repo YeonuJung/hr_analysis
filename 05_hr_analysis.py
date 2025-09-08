@@ -3,14 +3,32 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import requests
+import os
 import matplotlib.font_manager as fm
 
-# 한글 폰트 설정
-plt.rcParams['font.family'] = "NanumGothic"
-plt.rcParams['axes.unicode_minus'] = False
+@st.cache_data
+def download_and_setup_font():
+    font_url = "https://github.com/google/fonts/raw/main/ofl/nanumgothic/NanumGothic-Regular.ttf"
+    font_path = "NanumGothic.ttf"
+    
+    # 폰트 파일 다운로드 (한 번만)
+    if not os.path.exists(font_path):
+        response = requests.get(font_url)
+        with open(font_path, 'wb') as f:
+            f.write(response.content)
+    
+    # matplotlib에 폰트 추가
+    fm.fontManager.addfont(font_path)
+    plt.rcParams['font.family'] = 'NanumGothic'
+    plt.rcParams['axes.unicode_minus'] = False
+    
+    return "나눔고딕 설정 완료"
+
+font_status = download_and_setup_font()
 
 st.set_page_config(page_title="퇴직율 대시보드", layout="wide")
-sns.set(style="whitegrid", font="NanumGothic")
+sns.set_style=("whitegrid")
 
 # 1) 데이터 로드
 @st.cache_data
